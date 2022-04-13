@@ -41,7 +41,7 @@ public class Temanbaru extends AppCompatActivity {
                     qvalues.put("nama", nm);
                     qvalues.put("telpon", tlp);
 
-                    controller.InsertData(qvalues);
+                    controller.insertData(qvalues);
                     callHome();
 
                 }
