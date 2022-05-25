@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private TemanAdapter adapter;
-    private ArrayList<Teman> temanArrayList;
+    private ArrayList<Teman> temanArrayList = new ArrayList<>();
     Dbcontroller controller = new Dbcontroller(this);
 
     private FloatingActionButton fab;

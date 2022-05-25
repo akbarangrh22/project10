@@ -3,6 +3,7 @@ package com.example.pamproject6.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,14 +15,23 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.example.pamproject6.App.AppController;
+import com.example.pamproject6.EditTeman;
 import com.example.pamproject6.MainActivity;
 import com.example.pamproject6.R;
 import com.example.pamproject6.database.Dbcontroller;
 import com.example.pamproject6.database.Teman;
-import com.example.pamproject6.edit_teman;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TemanAdapter extends RecyclerView.Adapter<TemanAdapter.TemanViewHolder> {
     private ArrayList<Teman> listData;
@@ -64,7 +74,7 @@ public class TemanAdapter extends RecyclerView.Adapter<TemanAdapter.TemanViewHol
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.mnEdit:
-                                Intent i = new Intent(control, edit_teman.class);
+                                Intent i = new Intent(control, EditTeman.class);
                                 i.putExtra("id", id);
                                 i.putExtra("nama", nma);
                                 i.putExtra("telpon", tlp);
@@ -86,6 +96,41 @@ public class TemanAdapter extends RecyclerView.Adapter<TemanAdapter.TemanViewHol
             }
         });
     }
+
+    private void HapusData(final String idx) {
+        String url_update = "https://20200140078.praktikumtiumy.com/deletetm.php";
+        final String TAG = MainActivity.class.getSimpleName();
+        final String TAG_SUCCESS = "success";
+        final int[] sukses = new int[1];
+
+        StringRequest stringReq = new StringRequest(Request.Method.POST, url_update, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Respon: " + response.toString());
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    sukses[0] = jObj.getInt(TAG_SUCCESS);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error: " + error.getMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", idx);
+                return params;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(stringReq);
+    }
+
 
     @Override
     public int getItemCount() {
